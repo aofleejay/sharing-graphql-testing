@@ -62,6 +62,7 @@ describe('Test resolvers', () => {
 
     rootSchema._typeMap.Query.getFields().characters.resolve()
       .then(res => {
+        mockGOTService.verify()
         expect(res).to.deep.equals(expected)
         done()
       })
