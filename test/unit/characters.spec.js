@@ -2,6 +2,7 @@ import sinon from 'sinon'
 import { expect } from 'chai'
 import { GraphQLString, GraphQLNonNull } from 'graphql'
 import rootSchema from '../../src/schemas/rootSchema'
+import * as GOTService from '../../src/services/GOTService'
 
 describe('Test schema', () => {
   it('has correct character schema', () => {
@@ -26,7 +27,46 @@ describe('Test schema', () => {
 })
 
 describe('Test resolvers', () => {
-  it('has correct characters query', () => {
-    
+  let mockGOTService
+
+  beforeEach(() => {
+    mockGOTService = sinon.mock(GOTService)
+  })
+
+  afterEach(() => {
+    mockGOTService.restore()    
+  })
+
+  it('has correct characters query', (done) => {
+    const expected = [
+      {
+        id: "1",
+        name: "Jamie Lanister",
+        gender: {
+          name: "Male"
+        }
+      }
+    ]
+    const serviceResponse = [
+      {
+        id: "1",
+        name: "Jamie Lanister",
+        gender: {
+          name: "Male"
+        }
+      }
+    ]
+    mockGOTService.expects('getCharacters').once().returns(Promise.resolve({
+      data: serviceResponse
+    }))
+
+    rootSchema._typeMap.Query.getFields().characters.resolve()
+      .then(res => {
+        expect(res).to.deep.equals(expected)
+        done()
+      })
+      .catch(err => {
+        done(err)
+      })
   })
 })
