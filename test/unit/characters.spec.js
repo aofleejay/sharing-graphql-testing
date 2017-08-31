@@ -50,6 +50,7 @@ describe('Test resolvers', () => {
     mockGOTService.expects('getCharacters').once().returns(GOTServiceResponse)
 
     charactersQuery.resolve().then(res => {
+      mockGOTService.verify()
       expect(res).to.deep.equals(expected)
       done()
     }).catch(err => {

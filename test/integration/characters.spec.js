@@ -48,6 +48,7 @@ describe('Test query', () => {
     .set('Accept', 'application/json')
     .send(query)
     .then(res => {
+      mockAxios.verify()
       expect(res.body.data).to.deep.equals(expected)
       done()
     })
