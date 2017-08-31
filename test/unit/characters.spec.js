@@ -2,7 +2,7 @@ import sinon from 'sinon'
 import { expect } from 'chai'
 
 describe('Test schema', () => {
-  it.only('has correct character schema', () => {
+  it('has correct character schema', () => {
     
   })
 
