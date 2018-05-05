@@ -3,15 +3,15 @@
     {
       "id": "1",
       "name": "John Snow",
-      "gender": {
-        "name": "Male"
+      "actor": {
+        "name": "Kit Harington"
       }
     },
     {
       "id": "2",
       "name": "Sansa Stark",
-      "gender": {
-        "name": "Female"
+      "actor": {
+        "name": "Sophie Turner"
       }
     }
   ]
