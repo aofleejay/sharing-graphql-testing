@@ -7,7 +7,7 @@
     "start": "npm-run-all --parallel json-server node-server",
     "node-server": "nodemon src/server.js --exec babel-node",
     "json-server": "json-server --watch db.json",
-    "test": "mocha --compilers js:babel-core/register ./test/**/*.spec.js"
+    "test": "mocha --compilers js:babel-core/register ./test/**/*.spec.js --exit"
   },
   "repository": "https://github.com/aofleejay/graphql-testing-workshop.git",
   "author": "Kunapot Pairat",
