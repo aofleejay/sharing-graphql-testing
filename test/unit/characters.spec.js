@@ -1,28 +1,38 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
 import { GraphQLString, GraphQLNonNull } from 'graphql'
-import rootSchema from '../../src/schemas/rootSchema'
+import characterSchema from '../../src/schemas/character'
 import * as GOTService from '../../src/services/GOTService'
 
 describe('Test schema', () => {
-  it('has correct character schema', () => {
-    const characterSchema = rootSchema._typeMap.Character.getFields()
+  const characterTypeMap = characterSchema.getTypeMap()
 
-    expect(characterSchema).to.have.property('name')
-    expect(characterSchema.name.type).to.deep.equals(GraphQLString)
+  describe('has correct character schema', () => {
+    const characterFields = characterTypeMap.Character.getFields()
 
-    expect(characterSchema).to.have.property('id')
-    expect(characterSchema.id.type).to.deep.equals(new GraphQLNonNull(GraphQLString))
+    it('Should have required field id where type is String', () => {
+      expect(characterFields).to.have.property('id')
+      expect(characterFields.id.type).to.deep.equals(new GraphQLNonNull(GraphQLString))
+    })
 
-    expect(characterSchema).to.have.property('gender')
-    expect(characterSchema.gender.type).to.deep.equals(rootSchema._typeMap.Gender)
+    it('Should have field name where type is String', () => {
+      expect(characterFields).to.have.property('name')
+      expect(characterFields.name.type).to.deep.equals(GraphQLString)
+    })
+
+    it('Should have field actor where type is Actor', () => {
+      expect(characterFields).to.have.property('actor')
+      expect(characterFields.actor.type).to.deep.equals(characterSchema.getTypeMap().Actor)
+    })
   })
 
-  it('has correct gender schema', () => {
-    const genderSchema = rootSchema._typeMap.Gender.getFields()
+  describe('has correct Actor schema', () => {
+    const actorFields = characterTypeMap.Actor.getFields()
 
-    expect(genderSchema).to.have.property('name')
-    expect(genderSchema.name.type).to.deep.equals(GraphQLString)
+    it('Should have field name where type is String', () => {
+      expect(actorFields).to.have.property('name')
+      expect(actorFields.name.type).to.deep.equals(GraphQLString)
+    })
   })
 })
 
@@ -33,34 +43,23 @@ describe('Test resolvers', () => {
     mockGOTService = sinon.mock(GOTService)
   })
 
-  afterEach(() => {
-    mockGOTService.restore()    
+  afterEach(() => {	
+    mockGOTService.restore()
   })
 
   it('has correct characters query', (done) => {
+    const charactersQuery = characterSchema.getTypeMap().Query.getFields().characters
     const expected = [
-      {
-        id: "1",
-        name: "Jamie Lanister",
-        gender: {
-          name: "Male"
-        }
-      }
+      { id: '1', name: 'John Snow', actor: { name: 'Kit Harington' }}
     ]
-    const serviceResponse = [
-      {
-        id: "1",
-        name: "Jamie Lanister",
-        gender: {
-          name: "Male"
-        }
-      }
-    ]
-    mockGOTService.expects('getCharacters').once().returns(Promise.resolve({
-      data: serviceResponse
-    }))
-
-    rootSchema._typeMap.Query.getFields().characters.resolve()
+    const GOTServiceResponse = Promise.resolve({
+      data: [
+        { id: '1', name: 'John Snow', actor: { name: 'Kit Harington' }}
+      ]
+    })
+    mockGOTService.expects('getCharacters').once().returns(GOTServiceResponse)
+    
+    charactersQuery.resolve()
       .then(res => {
         mockGOTService.verify()
         expect(res).to.deep.equals(expected)
