@@ -1,20 +1,8 @@
-import { makeExecutableSchema } from 'graphql-tools'
-import {
-  typeDefs as charactersTypeDefs,
-  resolvers as charactersResolvers,
-} from './characters'
+import { mergeSchemas } from 'graphql-tools'
+import characterSchema from './character'
 
-const typeDefs = `
-  ${charactersTypeDefs}
-
-  type Query {
-    characters: [Character]
-  }
-`
-
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers: charactersResolvers,
+const rootSchema = mergeSchemas({
+  schemas: [characterSchema],
 })
 
-export default schema
+export default rootSchema
