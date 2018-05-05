@@ -23,7 +23,7 @@ describe('Test query', () => {
           characters {
             id
             name
-            gender {
+            actor {
               name
             }
           }
@@ -35,8 +35,8 @@ describe('Test query', () => {
         {
           id: "1",
           name: "John Snow",
-          gender: {
-            name: "Male"
+          actor: {
+            name: "Kit Harington"
           }
         }
       ]
@@ -46,8 +46,8 @@ describe('Test query', () => {
         {
           id: "1",
           name: "John Snow",
-          gender: {
-            name: "Male"
+          actor: {
+            name: "Kit Harington"
           }
         }
       ]
