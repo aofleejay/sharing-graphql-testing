@@ -1,5 +1,5 @@
 import { mergeSchemas } from 'graphql-tools'
-import characterSchema from './characters'
+import characterSchema from './character'
 
 const rootSchema = mergeSchemas({
   schemas: [characterSchema],
