@@ -6,15 +6,24 @@ import server from '../../src/server'
 import { GOT_SERVICE } from '../../src/constants/endpoints'
 
 describe('Test query', () => {
+  let mockAxios
+
+  beforeEach(() => {
+    mockAxios = sinon.mock(axios)
+  })
+
+  afterEach(() => {
+    mockAxios.restore()
+  })
+
   it('has correct characters query', (done) => {
-    const request = supertest.agent(server)
     const query = {
       query: `
         query {
           characters {
             id
             name
-            gender {
+            actor {
               name
             }
           }
@@ -26,34 +35,34 @@ describe('Test query', () => {
         {
           id: "1",
           name: "John Snow",
-          gender: {
-            name: "Male"
+          actor: {
+            name: "Kit Harington"
           }
         }
       ]
     }
-    const serviceResponse = [
-      {
-        id: "1",
-        name: "John Snow",
-        gender: {
-          name: "Male"
-        },
-      },
-    ]
-    const mockAxios = sinon.mock(axios)
-    mockAxios.expects('get').withArgs(`${GOT_SERVICE}/characters`).once().returns(Promise.resolve({ data: serviceResponse }))
+    mockAxios.expects('get').withArgs(`${GOT_SERVICE}/characters`).once().returns(Promise.resolve({
+      data: [
+        {
+          id: "1",
+          name: "John Snow",
+          actor: {
+            name: "Kit Harington"
+          }
+        }
+      ]
+    }))
 
-    request.post('/graphql')
-    .set('Accept', 'application/json')
-    .send(query)
-    .then(res => {
-      mockAxios.verify()
-      expect(res.body.data).to.deep.equals(expected)
-      done()
-    })
-    .catch(err => {
-      done(err)
-    })
+    supertest.agent(server)
+      .post('/graphql')
+      .send(query)
+      .then(res => {
+        mockAxios.verify()
+        expect(res.body.data).to.deep.equals(expected)
+        done()
+      })
+      .catch(err => {
+        done(err)
+      })
   })
 })
