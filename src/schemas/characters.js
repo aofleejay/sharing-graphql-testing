@@ -1,14 +1,19 @@
+import { makeExecutableSchema } from 'graphql-tools'
 import { getCharacters } from '../services/GOTService'
 
 const typeDefs = `
   type Character {
     id: String!
     name: String
-    gender: Gender
+    actor: Actor
   }
 
-  type Gender {
+  type Actor {
     name: String
+  }
+
+  type Query {
+    characters: [Character]
   }
 `
 
@@ -21,7 +26,9 @@ const resolvers = {
   }
 }
 
-export {
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
-}
+})
+
+export default schema
