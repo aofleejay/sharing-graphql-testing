@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
 import { GraphQLString, GraphQLNonNull } from 'graphql'
-import characterSchema from '../../src/schemas/characters'
+import characterSchema from '../../src/schemas/character'
 
 describe('Test schema', () => {
   const characterTypeMap = characterSchema.getTypeMap()
